@@ -1,8 +1,9 @@
 {
   "name": "contacts-generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generates fake VCF or CSV contacts for testing purposes. ",
   "main": "index.js",
+  "preferGlobal": true,
   "scripts": {
     "start": "node index.js"
   },
