@@ -123,23 +123,6 @@ const count = _.toNumber(argv.n || 100);
 const data = [];
 
 const generate = () => {
-    if(isVcf) {
-        const card = new vCard();
-        card.firstName = chance.first();
-        card.lastName = chance.last();
-        card.gender = _.sample(['M', 'F']);
-        card.cellPhone = chance.phone();
-        card.email = chance.email(),
-        card.homeAddress.label = 'Home';
-        card.homeAddress.street = chance.address();
-        card.homeAddress.city = chance.city();
-        card.homeAddress.stateProvince = chance.state();
-        card.homeAddress.postalCode = chance.postal();
-        card.homeAddress.countryRegion = chance.country();
-        card.note = 'Auto-generated contact'
-        return card.getFormattedString();
-    }
-
     return {
         name: {
             givenName: chance.first(),
@@ -155,16 +138,39 @@ const generate = () => {
         postalCode: chance.postal(),
         country: chance.country(),
         gender: chance.gender(),
+        orgTitle: chance.sentence({ words: 2 }),
+        orgName: chance.domain(),
+        birthday: chance.birthday({ string: true }),
         notes: 'Auto-generated contact'
-    }
+    };
 }
+
+const tovCard = it => {
+    const card = new vCard();
+    card.firstName = it.name.givenName;
+    card.lastName = it.name.familyName;
+    card.gender = it.gender[0];
+    card.cellPhone = it.phoneNumber;
+    card.email = it.emailAddress,
+    card.homeAddress.label = 'Home';
+    card.homeAddress.street = it.street;
+    card.homeAddress.city = it.city;
+    card.homeAddress.stateProvince = it.state;
+    card.homeAddress.postalCode = it.postalCode;
+    card.homeAddress.countryRegion = it.country;
+    card.birthday = new Date(it.birthday);
+    card.title = it.orgTitle;
+    card.organization = it.orgName;
+    card.note = it.note;
+    return card.getFormattedString();
+};
 
 _.times(
     count,
     () => data.push(generate())
 );
 
-const output = isVcf ? data.join('\n') : json2csv({ data, fields});
+const output = isVcf ? _.map(data, tovCard).join('\n') : json2csv({ data, fields});
 const fileName = `gen-contacts-${Date.now()}.${isVcf ? 'vcf' : 'csv'}`;
 fs.writeFileSync(fileName, output);
 console.log(`Generated ${count} contacts into ${fileName}.`);

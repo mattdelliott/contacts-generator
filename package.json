@@ -1,6 +1,6 @@
 {
   "name": "contacts-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generates fake VCF or CSV contacts for testing purposes. ",
   "main": "index.js",
   "scripts": {
