@@ -135,7 +135,7 @@ const generate = () => {
         street: chance.address(),
         city: chance.city(),
         state: chance.state(),
-        postalCode: chance.postal(),
+        postalCode: chance.zip(),
         country: chance.country(),
         gender: chance.gender(),
         orgTitle: chance.sentence({ words: 2 }),
